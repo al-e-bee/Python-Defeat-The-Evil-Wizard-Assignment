@@ -1,0 +1,213 @@
+# Starter Code
+
+# Base Character class
+class Character:
+    def __init__(self, name, health, attack_power):
+        self.name = name
+        self.health = health
+        self.attack_power = attack_power
+        self.max_health = health
+        self.is_shielded = False # Track if an attack should be blocked
+        
+    def attack(self, opponent):
+        # Check if the opponent has an active shied/evade
+        if opponent.is_shielded:
+            print(f"{opponent.name} successfully blocked/evaded the attack from {self.name}!")
+            opponent.is_shielded = False # Consume the shield
+            return
+        
+        opponent.health -= self.attack_power
+        print(f"{self.name} attacks {opponent.name} for {self.attack_power} damage!")
+        if opponent.health <= 0:
+            print(f"{opponent.name} has been defeated!")
+            
+    def display_stats(self):
+        print(f"{self.name}'s Stats - Health: {self.health}/{self.max_health}, Attack Power: {self.attack_power}")
+
+#----Added healing method----      
+    def heal(self, amount):
+        self.health = min(self.max_health, self.health + amount)
+        print(f"{self.name} healed for {amount} HP! Current Health: {self.health}/{self.max_health}")
+        
+# Warrior Class (inherits from Character)
+class Warrior(Character):
+    def __init__(self, name):
+        super().__init__(name, health=140, attack_power=25)
+        
+    # ---Added special abilities----    
+    def use_special_ability(self, opponent):
+        print("\nChoose a Special Ability:")
+        print("1. Enrage (Sacrifce 15 HP for Double Damage)")
+        print("2. Iron Wall (Gain a Shield against the next attack)")
+        ability_choice = input("Enter choice: ")
+        
+        if ability_choice == '1':
+            print(f"\n{self.name} uses goes into a frenzy!")
+            self.health -= 15 # Sacrifice health
+            double_damage = self.attack_power * 2
+            opponent.health -= double_damage
+            print(f"{self.name} loses 15 HP but smashed {opponent.name} for {double_damage} damage!")
+        elif ability_choice == '2':
+            print(f"\n{self.name} raises a massive iron shield!")
+            self.is_shielded = True   
+        else:
+            print("Invalid choice. Ability failed!")
+        
+# Mage Class (inherits from Character)
+class Mage(Character):
+    def __init__(self, name):
+        super().__init__(name, health=100, attack_power=35)
+        
+    # ----Added special abilities----       
+    def use_special_ability(self, opponent):
+        print("\nChoose a Special Ability:")
+        print("1. Fireball (Cast a massive explosion)")
+        print("2. Mana Shield (Block the next attack with magic)")
+        ability_choice = input("Enter choice: ")
+        
+        if ability_choice == '1':
+            fireball_damage = int(self.attack_power * 1.5)
+            print(f"\n{self.name} casts Fireball!")
+            opponent.health -= fireball_damage
+            print(f"The blast hits {opponent.name} for {fireball_damage} spell damage!")
+        elif ability_choice == '2':
+            print(f"\n{self.name} weaves a defensive barrier of pure mana!")
+            self.is_shielded = True
+        else:
+            print("Invalid choice. Ability failed!")
+    
+        
+# EvilWizard class (inherits from Character)
+class EvilWizard(Character):
+    def __init__(self, name):
+        super().__init__(name, health=150, attack_power=15)
+        
+    def regenerate(self):
+        self.health += 5
+        print(f"{self.name} channels dark magic...")
+        self.heal(5)
+        
+# Created Archer Class (inherits from Character)
+class Archer(Character):
+    def __init__(self, name):
+        super().__init__(name, health=100, attack_power=20)
+
+# ---Added special abilities----    
+    def use_special_ability(self, opponent):
+        print("\nChoose a Special Ability:")
+        print("1. Quick Shot (Double Attack)")
+        print("2. Evade (Evades the next attack)")
+        ability_choice = input("Enter choice: ")
+        
+        if ability_choice == '1':
+            print(f"\n{self.name} uses Quick Shot!")
+            # Attacks twice
+            self.attack(opponent)
+            if opponent.health > 0:
+                self.attack(opponent)
+        elif ability_choice == '2':
+            print(f"\n{self.name} uses Evade! Preparing to dodge the next strike.")
+            self.is_shielded = True
+        else:
+            print("Invalid choice. Ability failed!")
+
+
+# Created Paladin Class (inherits from Character)
+class Paladin(Character):
+    def __init__(self, name):
+        super().__init__(name, health=140, attack_power=25)
+        
+# ---Added special abilities---
+    def use_special_ability(self, opponent):
+        print("\nChoose a Special Ability:")
+        print("1. Holy Strike (Bonus damage)")
+        print("2. Divine Shield (Blocks the next attack)")
+        ability_choice = input("Enter choice: ")
+        
+        if ability_choice == '1':
+            bonus_damage = self.attack_power + 20
+            print(f"\n{self.name} channels divine light into Holy Strike!")
+            
+            if opponent.is_shielded:
+                print(f"{opponent.name} blocked the Holy Strike!")
+                opponent.is_shielded = False
+            else:
+                opponent.health -= bonus_damage
+                print(f"{self.name} strikes {opponent.name} for a massive {bonus_damage} damage!")
+                if opponent.health <= 0:
+                    print(f"{opponent.name} has been defeated!")
+        elif ability_choice == '2':
+            print(f"\n{self.name} casts Divine Shield! An indestructible barrier surrounds them.")
+            self.is_shielded = True
+        else:
+            print("Invalid choice. Ability failed!")
+            
+       
+def create_character():
+    print("Choose your character class:")
+    print("1. Warrior")
+    print("2. Mage")
+    print("3. Archer")
+    print("4. Paladin")
+    
+    class_choice = input("Enter the number of your class choice: ")
+    name = input("Enter your character's name: ")
+    
+    if class_choice == '1':
+        return Warrior(name)
+    elif class_choice == '2':
+        return Mage(name)
+    elif class_choice == '3':
+        return Archer(name)
+    elif class_choice == '4':
+        return Paladin(name)
+    else:
+        print("Invalid choice. Defaulting to Warrior.")
+        return Warrior(name)
+    
+def battle(player, wizard):
+    while wizard.health > 0 and player.health > 0:
+        print("\n--- Your Turn ---")
+        print("1. Attack")
+        print("2. Use Special Ability")
+        print("3. Heal")
+        print("4. View Stats")
+        
+        choice = input("Choose an action: ")
+        turn_taken = False # Wrapping EvilWizard's logic so it only fires if a valid action is taken
+        
+        if choice == '1':
+            player.attack(wizard)
+            turn_taken = True
+        elif choice == '2':
+            player.use_special_ability(wizard) # Implemented special abilities
+            turn_taken = True
+        elif choice == '3':
+            player.heal(25) # Implemented heal method
+            turn_taken = True
+        elif choice == '4':
+            player.display_stats()
+        else:
+            print("Invalid choice. Try again.")
+       
+       # The wizard only counters if the player actually completed an action turn
+        if turn_taken and wizard.health > 0:
+            wizard.regnerate()     
+            wizard.attack(player)
+            
+        if player.health <=0:
+            print(f"{player.name} has been defeated!")
+            break
+        
+    if wizard.health <= 0:
+        print(f"\nVictory! The wizard {wizard.name} has been defeated by {player.name}!")
+        
+
+def main():
+    player = create_character()
+    wizard = EvilWizard("The Dark Wizard")
+    battle(player, wizard)
+    
+if __name__ == "__main__":
+    main()
+
