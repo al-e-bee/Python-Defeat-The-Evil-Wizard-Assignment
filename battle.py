@@ -38,7 +38,7 @@ class Character:
 # Warrior Class (inherits from Character)
 class Warrior(Character):
     def __init__(self, name):
-        super().__init__(name, health=140, attack_power=25, min_damage=10, max_damage=20)
+        super().__init__(name, health=140, attack_power=25, min_damage=10, max_damage=30)
         
     # ---Added special abilities----    
     def use_special_ability(self, opponent):
@@ -74,7 +74,7 @@ class Warrior(Character):
 # Mage Class (inherits from Character)
 class Mage(Character):
     def __init__(self, name):
-        super().__init__(name, health=100, attack_power=35, min_damage=8, max_damage=25)
+        super().__init__(name, health=100, attack_power=35, min_damage=10, max_damage=25)
         
     # ----Added special abilities----       
     def use_special_ability(self, opponent):
@@ -106,7 +106,7 @@ class Mage(Character):
 # Created Archer Class (inherits from Character)
 class Archer(Character):
     def __init__(self, name):
-        super().__init__(name, health=100, attack_power=20, min_damage=5, max_damage=15)
+        super().__init__(name, health=200, attack_power=20, min_damage=10, max_damage=20)
 
 # ---Added special abilities----    
     def use_special_ability(self, opponent):
@@ -117,10 +117,18 @@ class Archer(Character):
         
         if ability_choice == '1':
             print(f"\n{self.name} uses Quick Shot!")
-            # Attacks twice
-            self.attack(opponent)
-            if opponent.health > 0:
+            
+            if opponent.is_shielded:
+                print(f"{opponent.name} diverts {self.name}'s Quick Shot! No damage dealt.")
+                opponent.is_shielded = False
+                
+            else:
+                # Attacks twice
                 self.attack(opponent)
+                if opponent.health > 0:
+                    self.attack(opponent)
+                    print(f"{self.name} deals a double attack on {opponent.name}!")
+                    
         elif ability_choice == '2':
             print(f"\n{self.name} uses Evade! Preparing to dodge the next strike.")
             self.is_shielded = True
@@ -163,10 +171,8 @@ class EvilWizard(Character):
         super().__init__(name, health=150, attack_power=15, min_damage=15, max_damage=25)
         
     def regenerate(self):
-        self.health += 5
         print(f"{self.name} channels dark magic...")
-        self.heal(5)
-            
+        self.heal(5)       
        
 def create_character():
     print("Choose your character class:")
@@ -205,6 +211,8 @@ def battle(player, wizard):
             player.attack(wizard)
             turn_taken = True
         elif choice == '2':
+            # ----- TEMPORARY TEST LINE -----
+            # wizard.is_shielded = True # Forces the wizard's shield to be active for testing
             player.use_special_ability(wizard) # Implemented special abilities
             turn_taken = True
         elif choice == '3':
@@ -221,11 +229,17 @@ def battle(player, wizard):
             wizard.attack(player)
             
         if player.health <=0:
-            print(f"{player.name} has been defeated!")
+            print(f"Disaster strikes! {player.name} has been defeated by {wizard.name}!")
+            print("\n=======================")
+            print("\n====== GAME OVER ======")
+            print("\n=======================")
             break
         
     if wizard.health <= 0:
         print(f"\nVictory! The wizard {wizard.name} has been defeated by {player.name}!")
+        print("\n=======================")
+        print("\n====== GAME OVER ======")
+        print("\n=======================")
         
 
 def main():
