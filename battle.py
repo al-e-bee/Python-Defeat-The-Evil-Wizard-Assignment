@@ -1,23 +1,29 @@
+import random
 # Starter Code
 
 # Base Character class
 class Character:
-    def __init__(self, name, health, attack_power):
+    def __init__(self, name, health, attack_power, min_damage, max_damage):
         self.name = name
         self.health = health
         self.attack_power = attack_power
         self.max_health = health
+        self.min_damage = min_damage
+        self.max_damage = max_damage
         self.is_shielded = False # Track if an attack should be blocked
         
     def attack(self, opponent):
+      
         # Check if the opponent has an active shied/evade
         if opponent.is_shielded:
             print(f"{opponent.name} successfully blocked/evaded the attack from {self.name}!")
             opponent.is_shielded = False # Consume the shield
             return
         
-        opponent.health -= self.attack_power
-        print(f"{self.name} attacks {opponent.name} for {self.attack_power} damage!")
+          # Calculate random damage from attack
+        damage = random.randint(self.min_damage, self.max_damage)
+        opponent.health -= damage
+        print(f"{self.name} attacks {opponent.name} for {damage} damage!")
         if opponent.health <= 0:
             print(f"{opponent.name} has been defeated!")
             
@@ -32,7 +38,7 @@ class Character:
 # Warrior Class (inherits from Character)
 class Warrior(Character):
     def __init__(self, name):
-        super().__init__(name, health=140, attack_power=25)
+        super().__init__(name, health=140, attack_power=25, min_damage=10, max_damage=20)
         
     # ---Added special abilities----    
     def use_special_ability(self, opponent):
@@ -42,11 +48,23 @@ class Warrior(Character):
         ability_choice = input("Enter choice: ")
         
         if ability_choice == '1':
-            print(f"\n{self.name} uses goes into a frenzy!")
-            self.health -= 15 # Sacrifice health
+            
             double_damage = self.attack_power * 2
-            opponent.health -= double_damage
-            print(f"{self.name} loses 15 HP but smashed {opponent.name} for {double_damage} damage!")
+            print(f"\n{self.name} uses goes into a frenzy!")
+            
+            if opponent.is_shielded:
+                print(f"{opponent.name} deflects {self.name}'s Enrage strike! No damage dealt.")
+                opponent.is_shielded = False
+            
+            else:
+                self.health -= 15 # Sacrifice health
+                opponent.health -= double_damage
+                print(f"{self.name} loses 15 HP but smashed {opponent.name} for {double_damage} damage!")
+                
+                # Checks if opponent's health has reached 0 so they don't get a phantom turn
+                if opponent.health <= 0:
+                    print(f"{opponent.name} has been defeated!")
+    
         elif ability_choice == '2':
             print(f"\n{self.name} raises a massive iron shield!")
             self.is_shielded = True   
@@ -56,7 +74,7 @@ class Warrior(Character):
 # Mage Class (inherits from Character)
 class Mage(Character):
     def __init__(self, name):
-        super().__init__(name, health=100, attack_power=35)
+        super().__init__(name, health=100, attack_power=35, min_damage=8, max_damage=25)
         
     # ----Added special abilities----       
     def use_special_ability(self, opponent):
@@ -68,29 +86,27 @@ class Mage(Character):
         if ability_choice == '1':
             fireball_damage = int(self.attack_power * 1.5)
             print(f"\n{self.name} casts Fireball!")
-            opponent.health -= fireball_damage
-            print(f"The blast hits {opponent.name} for {fireball_damage} spell damage!")
+            
+            if opponent.is_shielded:
+                print(f"{opponent.name} extinguishes {self.name}'s fireball! No damage dealt.")
+                opponent.is_shielded = False
+            else:
+                opponent.health -= fireball_damage
+                print(f"The blast hits {opponent.name} for {fireball_damage} spell damage!")
+                # Checks if opponent's health has reached 0 so they don't get a phantom turn
+                if opponent.health <=0:
+                    print(f"{opponent.name} has been defeated!")
+            
         elif ability_choice == '2':
             print(f"\n{self.name} weaves a defensive barrier of pure mana!")
             self.is_shielded = True
         else:
             print("Invalid choice. Ability failed!")
-    
-        
-# EvilWizard class (inherits from Character)
-class EvilWizard(Character):
-    def __init__(self, name):
-        super().__init__(name, health=150, attack_power=15)
-        
-    def regenerate(self):
-        self.health += 5
-        print(f"{self.name} channels dark magic...")
-        self.heal(5)
         
 # Created Archer Class (inherits from Character)
 class Archer(Character):
     def __init__(self, name):
-        super().__init__(name, health=100, attack_power=20)
+        super().__init__(name, health=100, attack_power=20, min_damage=5, max_damage=15)
 
 # ---Added special abilities----    
     def use_special_ability(self, opponent):
@@ -111,11 +127,10 @@ class Archer(Character):
         else:
             print("Invalid choice. Ability failed!")
 
-
 # Created Paladin Class (inherits from Character)
 class Paladin(Character):
     def __init__(self, name):
-        super().__init__(name, health=140, attack_power=25)
+        super().__init__(name, health=140, attack_power=25, min_damage=10, max_damage=20)
         
 # ---Added special abilities---
     def use_special_ability(self, opponent):
@@ -141,6 +156,16 @@ class Paladin(Character):
             self.is_shielded = True
         else:
             print("Invalid choice. Ability failed!")
+            
+# EvilWizard class (inherits from Character)
+class EvilWizard(Character):
+    def __init__(self, name):
+        super().__init__(name, health=150, attack_power=15, min_damage=15, max_damage=25)
+        
+    def regenerate(self):
+        self.health += 5
+        print(f"{self.name} channels dark magic...")
+        self.heal(5)
             
        
 def create_character():
@@ -192,7 +217,7 @@ def battle(player, wizard):
        
        # The wizard only counters if the player actually completed an action turn
         if turn_taken and wizard.health > 0:
-            wizard.regnerate()     
+            wizard.regenerate()
             wizard.attack(player)
             
         if player.health <=0:
