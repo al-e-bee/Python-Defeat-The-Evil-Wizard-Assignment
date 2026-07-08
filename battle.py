@@ -169,10 +169,57 @@ class Paladin(Character):
 class EvilWizard(Character):
     def __init__(self, name):
         super().__init__(name, health=150, attack_power=15, min_damage=15, max_damage=25)
+        self.minions = 0
+        self.is_storm_active = False
         
     def regenerate(self):
         print(f"{self.name} channels dark magic...")
-        self.heal(5)       
+        self.heal(5)
+# Added advanced abilities to Evil Wizard        
+    def take_turn(self, opponent):
+        # 1. Wizard always regenerates health a the start of his turn
+        self.regenerate()
+        # 2. Handle ongoing effects first
+        if self.is_storm_active:
+            storm_damage = random.randint(5,15)
+            opponent.health -= storm_damage
+            print(f"The wizard summons a storm and zaps {opponent.name} for {storm_damage} damage!")
+            if opponent.health <= 0:
+                return  #Stop turn if passive damage wins the game
+    
+    # 3. Randomly choose an action for this turn
+    # Weigh choices by putting them in a list
+        available_actions = ['attack']
+    
+        if self.minions < 2: # Only summon if the wizard has less than 2 minions
+            available_actions.append('summon')
+        if not self.is_storm_active: # Only start a storm if one isn't raging
+            available_actions.append('storm')
+        
+        action = random.choice(available_actions)
+    
+    # 4. Execute the chosen action
+        if action == 'attack':
+        # Minions add bonus damage to his regular attack
+            if self.minions > 0:
+                bonus = self.minions * 5
+                print(f"The wizard's {self.minions} minion(s) assist the attack against {opponent.name}!")
+                self.min_damage += bonus
+                self.max_damage += bonus
+                self.attack(opponent)
+                self.min_damage -= bonus # Reset stats back to normal
+                self.max_damage -= bonus
+            else:
+                self.attack(opponent)
+    
+        elif action == 'summon':
+            self.minions += 1
+            print(f"{self.name} chants an incantation and summons a Shadown Minion! (Total: {self.minions})")
+            print(f"Active minions grant the wizard +5 damage to standard attacks.")
+    
+        elif action == 'storm':
+            print(f"{self.name} raises his staff! A lightning storm begins raging across the battlefield!")
+            self.is_storm_active = True
        
 def create_character():
     print("Choose your character class:")
@@ -225,8 +272,7 @@ def battle(player, wizard):
        
        # The wizard only counters if the player actually completed an action turn
         if turn_taken and wizard.health > 0:
-            wizard.regenerate()
-            wizard.attack(player)
+            wizard.take_turn(player) 
             
         if player.health <=0:
             print(f"Disaster strikes! {player.name} has been defeated by {wizard.name}!")
