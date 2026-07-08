@@ -181,11 +181,15 @@ class EvilWizard(Character):
         self.regenerate()
         # 2. Handle ongoing effects first
         if self.is_storm_active:
-            storm_damage = random.randint(5,15)
-            opponent.health -= storm_damage
-            print(f"The wizard summons a storm and zaps {opponent.name} for {storm_damage} damage!")
-            if opponent.health <= 0:
-                return  #Stop turn if passive damage wins the game
+            if opponent.is_shielded:
+                print(f"{opponent.name}'s shield absorbs the lightning form the storm!")
+                opponent.is_shielded = False # Consume the shield
+            else:
+                storm_damage = random.randint(5,15)
+                opponent.health -= storm_damage
+                print(f"The wizard summons a storm and zaps {opponent.name} for {storm_damage} damage!")
+                if opponent.health <= 0:
+                    return  #Stop turn if passive damage wins the game
     
     # 3. Randomly choose an action for this turn
     # Weigh choices by putting them in a list
