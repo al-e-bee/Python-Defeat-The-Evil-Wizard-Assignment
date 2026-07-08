@@ -244,7 +244,13 @@ def create_character():
     print("3. Archer")
     print("4. Paladin")
     
-    class_choice = input("Enter the number of your class choice: ")
+    class_choice = input("Enter the number of your class choice: ").strip()
+    # Safety loop: Keep asking user for input until they pick a valid number 1-4
+    while class_choice not in ['1', '2', '3', '4']:
+        print("Invalid selection! Please choose a cnumber between 1 and 4.")
+        class_choice = input("Enter the number of your class choice: ").strip()
+        
+    # Now that we guarantee a valid class, ask for the character's name
     name = input("Enter your character's name: ").strip().title()
     while not name:
         print("A true hero needs a name! Please enter a valid name!")
@@ -258,9 +264,6 @@ def create_character():
         return Archer(name)
     elif class_choice == '4':
         return Paladin(name)
-    else:
-        print(f"Invalid choice. Defaulting {name} to a mighty Warrior!")
-        return Warrior(name)
     
 def battle(player, wizard):
     while wizard.health > 0 and player.health > 0:
