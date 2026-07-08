@@ -1,4 +1,3 @@
----
 # Python Text-Based RPG: Heroes vs. The Dark Wizard
 
 Welcome to a terminal-based, Object-Oriented Programming (OOP) role-playing game built in Python. Players choose a hero class, manage tactical choices like special skills, shielding, and healing, and attempt to take down an escalating, dynamic boss: **The Dark Wizard**.
@@ -26,12 +25,14 @@ The codebase relies heavily on clean OOP architecture to govern state changes ac
 
 ## Hero Archetypes & Abilities
 
-| Class       | Health | Base Damage | Special Ability 1                                                                         | Special Ability 2                                                            |
-| ----------- | ------ | ----------- | ----------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| **Warrior** | 140    | 10–30       | **Enrage:** Sacrifices 15 HP to deal a flat double-damage blow ($50$ Damage).             | **Iron Wall:** Raises a physical barrier that fully deflects the next hit.   |
-| **Mage**    | 100    | 10–25       | **Fireball:** Channels an explosive spell scaling off attack power ($52$ Magic Damage).   | **Mana Shield:** Crafts a magical barrier that fully deflects the next hit.  |
-| **Archer**  | 200    | 10–20       | **Quick Shot:** Fires two distinct, consecutive basic arrow attacks in a single turn.     | **Evade:** Prepares to entirely dodge incoming damage next turn.             |
-| **Paladin** | 140    | 10–20       | **Holy Strike:** Imbues a massive single attack with raw divine light ($45$ Holy Damage). | **Divine Shield:** Surrounds the hero in an indestructible defensive shield. |
+## ⚔️ Hero Archetypes & Abilities
+
+| Class       | Health | Base Damage | Special Ability 1                                                                       | Special Ability 2                                                            |
+| :---------- | :----: | :---------: | :-------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------- |
+| **Warrior** |  140   |    10–30    | **Enrage:** Sacrifices 15 HP to deal a flat double-damage blow (50 Damage).             | **Iron Wall:** Raises a physical barrier that fully deflects the next hit.   |
+| **Mage**    |  100   |    10–25    | **Fireball:** Channels an explosive spell scaling off attack power (52 Magic Damage).   | **Mana Shield:** Crafts a magical barrier that fully deflects the next hit.  |
+| **Archer**  |  200   |    10–20    | **Quick Shot:** Fires two distinct, consecutive basic arrow attacks in a single turn.   | **Evade:** Prepares to entirely dodge incoming damage next turn.             |
+| **Paladin** |  140   |    10–20    | **Holy Strike:** Imbues a massive single attack with raw divine light (45 Holy Damage). | **Divine Shield:** Surrounds the hero in an indestructible defensive shield. |
 
 ---
 
