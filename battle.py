@@ -1,7 +1,8 @@
 import random
 # Starter Code
-
-# Base Character class
+# =========================================
+#          BASE CHARACTER CLASS
+# =========================================
 class Character:
     def __init__(self, name, health, attack_power, min_damage, max_damage):
         self.name = name
@@ -34,6 +35,10 @@ class Character:
     def heal(self, amount):
         self.health = min(self.max_health, self.health + amount)
         print(f"{self.name} healed for {amount} HP! Current Health: {self.health}/{self.max_health}")
+
+# =========================================
+#           PLAYER HERO CLASSES
+# =========================================
         
 # Warrior Class (inherits from Character)
 class Warrior(Character):
@@ -164,7 +169,10 @@ class Paladin(Character):
             self.is_shielded = True
         else:
             print("Invalid choice. Ability failed!")
-            
+
+# =========================================
+#           BOSS ENEMY CLASS
+# =========================================
 # EvilWizard class (inherits from Character)
 class EvilWizard(Character):
     def __init__(self, name):
@@ -182,7 +190,7 @@ class EvilWizard(Character):
         # 2. Handle ongoing effects first
         if self.is_storm_active:
             if opponent.is_shielded:
-                print(f"{opponent.name}'s shield absorbs the lightning form the storm!")
+                print(f"{opponent.name}'s shield absorbs the lightning from the storm!")
                 opponent.is_shielded = False # Consume the shield
             else:
                 storm_damage = random.randint(5,15)
@@ -224,7 +232,11 @@ class EvilWizard(Character):
         elif action == 'storm':
             print(f"{self.name} raises his staff! A lightning storm begins raging across the battlefield!")
             self.is_storm_active = True
-       
+
+
+# ======================================
+#       GAME SYSTEM LOOP LOGIC
+# ======================================       
 def create_character():
     print("Choose your character class:")
     print("1. Warrior")
