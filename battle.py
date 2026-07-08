@@ -15,7 +15,7 @@ class Character:
         
     def attack(self, opponent):
       
-        # Check if the opponent has an active shied/evade
+        # Check if the opponent has an active shield/evade
         if opponent.is_shielded:
             print(f"{opponent.name} successfully blocked/evaded the attack from {self.name}!")
             opponent.is_shielded = False # Consume the shield
@@ -245,7 +245,10 @@ def create_character():
     print("4. Paladin")
     
     class_choice = input("Enter the number of your class choice: ")
-    name = input("Enter your character's name: ")
+    name = input("Enter your character's name: ").strip().title()
+    while not name:
+        print("A true hero needs a name! Please enter a valid name!")
+        name = input("Enter your character's name: ").strip().title()
     
     if class_choice == '1':
         return Warrior(name)
@@ -256,7 +259,7 @@ def create_character():
     elif class_choice == '4':
         return Paladin(name)
     else:
-        print("Invalid choice. Defaulting to Warrior.")
+        print(f"Invalid choice. Defaulting {name} to a mighty Warrior!")
         return Warrior(name)
     
 def battle(player, wizard):
